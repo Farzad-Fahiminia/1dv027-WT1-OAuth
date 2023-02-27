@@ -8,9 +8,12 @@
 import { container } from './config/bootstrap.js'
 
 import express from 'express'
+import expressLayouts from 'express-ejs-layouts'
 import helmet from 'helmet'
 import logger from 'morgan'
 import createError from 'http-errors'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 import { router } from './routes/router.js'
 import { connectDB } from './config/mongoose.js'
 
@@ -21,6 +24,13 @@ try {
 
   app.set('container', container)
 
+  // Get the directory name of this module's path.
+  const directoryFullName = dirname(fileURLToPath(import.meta.url))
+  console.log('TEST ', directoryFullName)
+
+  // Set the base URL to use for all relative URLs in a document.
+  const baseURL = process.env.BASE_URL || '/'
+
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet())
 
@@ -29,6 +39,27 @@ try {
 
   // Parse requests of the content type application/json.
   app.use(express.json())
+
+  // View engine setup.
+  app.set('view engine', 'ejs')
+  app.set('views', join(directoryFullName, 'views'))
+  app.use(expressLayouts)
+  app.set('layout', join(directoryFullName, 'views', 'layouts', 'default'))
+
+  // Parse requests of the content type application/x-www-form-urlencoded.
+  // Populates the request object with a body object (req.body).
+  app.use(express.urlencoded({ extended: false }))
+
+  // Serve static files.
+  app.use(express.static(join(directoryFullName, '..', 'public')))
+
+  // Middleware to be executed before the routes.
+  app.use((req, res, next) => {
+    // Pass the base URL to the views.
+    res.locals.baseURL = baseURL
+
+    next()
+  })
 
   // Register routes.
   app.use('/', router)

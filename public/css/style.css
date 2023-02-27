@@ -1,0 +1,175 @@
+/* ---------- General ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+a {
+  color: #111;
+  transition: all 300ms ease;
+}
+
+body {
+  background-color: #dceae8;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+}
+
+input[type=text],
+input[type=password],
+input[type=number],
+input[type=checkbox],
+input[type=submit],
+input[type=button],
+textarea {
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: none;
+}
+
+input, label {
+  display: block;
+}
+
+textarea {
+  resize: none;
+}
+
+button, input[type=submit] {
+  cursor: pointer;
+  padding: 10px 20px;
+  background-color: #111;
+  color: #fff;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 300ms ease;
+}
+
+button:hover, input[type=submit]:hover {
+  background-color: #000;
+}
+
+.table-striped {
+  border-collapse: collapse;
+  width: 90%;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.table-striped td, .table-striped th {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.table-striped tr:nth-child(even){
+  background-color: #f2f2f2;
+  border-radius: 4px;
+}
+
+.table-striped tr:hover {
+  background-color: #dceae8;
+  border-radius: 4px;
+}
+
+.table-striped th {
+  padding: 15px;
+  text-align: left;
+  background-color: #111;
+  border-radius: 4px;
+  color: #fff;
+}
+
+/* ---------- Header ---------- */
+header {
+  /* background-color: #111; */
+  /* color: #111; */
+  padding: 30px 20px;
+}
+
+header a {
+  text-decoration: none;
+  color: #111;
+}
+
+.navbar-brand {
+  font-weight: 700;
+}
+
+nav {
+  display: block;
+  float: right;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  display:inline;
+  padding: 2em 0.8em;
+}
+
+nav ul a {
+  color: #111;
+  list-style-type: none;
+  display:inline;
+}
+
+nav ul a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Content ---------- */
+main {
+  padding: 1em;
+}
+
+.alert-danger {
+  padding: 10px;
+  background-color: red;
+  border-radius: 4px;
+  color: #fff;
+  text-align: center;
+  width: 50%;
+  margin: auto;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+
+.alert-success {
+  padding: 10px;
+  background-color: green;
+  border-radius: 4px;
+  color: #fff;
+  text-align: center;
+  width: 50%;
+  margin: auto;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+
+.center-content {
+  display: block;
+  margin: auto;
+  max-width: 230px;
+}
+
+.center {
+  text-align: center;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 80px;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
