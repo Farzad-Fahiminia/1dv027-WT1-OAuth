@@ -26,7 +26,6 @@ try {
 
   // Get the directory name of this module's path.
   const directoryFullName = dirname(fileURLToPath(import.meta.url))
-  console.log('TEST ', directoryFullName)
 
   // Set the base URL to use for all relative URLs in a document.
   const baseURL = process.env.BASE_URL || '/'

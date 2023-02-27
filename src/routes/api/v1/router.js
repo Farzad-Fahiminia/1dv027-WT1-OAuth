@@ -8,13 +8,17 @@
 import express from 'express'
 import { router as homeRouter } from './homeRouter.js'
 import { router as tasksRouter } from './tasksRouter.js'
+import { router as usersRouter } from './usersRouter.js'
 
 export const router = express.Router()
 
 router.use('/', homeRouter)
+router.use('/users', usersRouter)
 
 router.get('/', (req, res) => res.json({ message: 'Hooray! Welcome to version 1 of this very simple RESTful API!' }))
 router.use('/tasks', tasksRouter)
+
+router.get('/users', (req, res) => res.json({ message: 'HO HO HO!' }))
 
 router.use('*', (req, res, next) => {
   const error = new Error('Not Found')
