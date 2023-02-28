@@ -6,7 +6,6 @@
  */
 
 import { container } from './config/bootstrap.js'
-
 import express from 'express'
 import expressLayouts from 'express-ejs-layouts'
 import helmet from 'helmet'
@@ -15,10 +14,10 @@ import createError from 'http-errors'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { router } from './routes/router.js'
-import { connectDB } from './config/mongoose.js'
+// import { connectDB } from './config/mongoose.js'
 
 try {
-  await connectDB(container.resolve('ConnectionString'))
+  // await connectDB(container.resolve('ConnectionString'))
 
   const app = express()
 
