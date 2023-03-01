@@ -1,24 +1,21 @@
 <header>
-  <a class="navbar-brand" href="./">GitNOW</a>
+  <a class="navbar-brand" href="./">1DV027-WT1</a>
   <nav class="navbar">
     <ul class="navbar-nav">
       <li class="nav-item">
         <a class="nav-link" href="./">Home</a>
       </li>
-      <% if (typeof username === 'undefined') { %>
+      <% if (typeof loggedIn !== 'boolean') { %>
       <li class="nav-item">
         <a class="nav-link" href="./users/login">Login</a>
       </li>
       <% } %>
-      <% if (typeof username !== 'undefined') { %>
-        <li class="nav-item">
-          <a class="nav-link" href="./snippets/create">Create Snippets</a>
+      <% if (typeof loggedIn === 'boolean') { %>
+        <li>
+          <a class="nav-link" href="./users/profile">Profile</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="./users/logout">Logout</a>
-        </li>
-        <li>
-          Hello, <a class="nav-link" href="./users/account"><%= username %></a>
         </li>
       <% } %>
     </ul>

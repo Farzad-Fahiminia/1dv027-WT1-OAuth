@@ -48,16 +48,24 @@ export class UsersController {
 
     // console.log('code ', codeVerifier)
 
-    let accessToken = await fetch('https://gitlab.lnu.se/oauth/token', {
+    const response = await fetch('https://gitlab.lnu.se/oauth/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body)
     })
-    accessToken = await accessToken.json()
+    console.log(response.status)
+    const accessToken = await response.json()
 
     console.log(accessToken)
+
+    if (response.status === 200) {
+      req.session.accessToken = accessToken
+      req.session.loggedIn = true
+    }
+
+    console.log(req.session)
 
     // res.render('./users/account')
     res.redirect('./profile')
@@ -71,7 +79,39 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   async profile (req, res, next) {
-    res.render('./users/profile')
+    console.log('REQ ', req.session.accessToken)
+    const token = req.session.accessToken?.access_token
+    console.log('TOKEN ', token)
+    // console.log('ACCESS ', req.session.accessToken.access_token)
+    try {
+      let data = await fetch('https://gitlab.lnu.se/api/v4/user', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      })
+      data = await data.json()
+
+      console.log('DATA ', data)
+
+      const viewData = {
+        id: data.id,
+        username: data.username,
+        name: data.name,
+        state: data.state,
+        avatar: data.avatar_url,
+        bio: data.bio,
+        last_activity_on: data.last_activity_on,
+        email: data.email
+      }
+
+      // res.render('issues/index', { viewData })
+
+      res.render('./users/profile', { viewData })
+    } catch (error) {
+      next(error)
+    }
   }
 
   // /**

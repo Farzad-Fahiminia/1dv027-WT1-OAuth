@@ -33,6 +33,17 @@ try {
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet())
 
+  // Adds XSS security to the application.
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        'script-src': ["'self'"],
+        'img-src': ['gitlab.lnu.se', '*.gravatar.com']
+      }
+    })
+  )
+
   // Set up a morgan logger using the dev format for log entries.
   app.use(logger('dev'))
 
@@ -52,14 +63,6 @@ try {
   // Serve static files.
   app.use(express.static(join(directoryFullName, '..', 'public')))
 
-  // Middleware to be executed before the routes.
-  app.use((req, res, next) => {
-    // Pass the base URL to the views.
-    res.locals.baseURL = baseURL
-
-    next()
-  })
-
   // Setup and use session middleware (https://github.com/expressjs/session)
   const sessionOptions = {
     name: process.env.SESSION_NAME, // Don't use default session cookie name.
@@ -68,7 +71,7 @@ try {
     saveUninitialized: false, // Don't save a created but not modified session.
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // 1 day
-      sameSite: 'strict'
+      sameSite: 'lax'
     }
   }
 
@@ -78,6 +81,18 @@ try {
   }
 
   app.use(session(sessionOptions))
+
+  // Middleware to be executed before the routes.
+  app.use((req, res, next) => {
+    // Pass the base URL to the views.
+    res.locals.baseURL = baseURL
+
+    if (req.session.loggedIn) {
+      res.locals.loggedIn = req.session.loggedIn
+    }
+
+    next()
+  })
 
   // Register routes.
   app.use('/', router)

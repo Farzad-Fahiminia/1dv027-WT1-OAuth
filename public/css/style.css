@@ -164,6 +164,12 @@ main {
   text-align: center;
 }
 
+.content {
+  background-color: red;
+  display: block;
+  max-width: 1200px;
+}
+
 /* ---------- Footer ---------- */
 footer {
   position: relative;
