@@ -6,6 +6,8 @@
  */
 
 // import { User } from '../models/user.js'
+import fetch from 'node-fetch'
+import cryptoRandomString from 'crypto-random-string'
 
 /**
  * Encapsulates a controller.
@@ -19,7 +21,7 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   login (req, res, next) {
-    res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.GITLAB_APP_ID}&redirect_uri=http://localhost:8080/users/callback&response_type=code&scope=${process.env.GITLAB_SCOPE}`)
+    res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.APP_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&scope=${process.env.REQUESTED_SCOPE}`)
   }
 
   /**
@@ -31,8 +33,34 @@ export class UsersController {
    */
   async callback (req, res, next) {
     console.log('TEST CALLBACK')
-    // console.log(res)
-    res.render('./users/account')
+    console.log(req.query.code)
+    const codeVerifier = cryptoRandomString({ length: 128 })
+
+    const body = {
+      client_id: process.env.APP_ID,
+      client_secret: process.env.APP_SECRET,
+      code: req.query.code,
+      redirect_uri: process.env.REDIRECT_URI,
+      grant_type: 'authorization_code'
+    }
+
+    console.log(body)
+
+    // console.log('code ', codeVerifier)
+
+    let accessToken = await fetch('https://gitlab.lnu.se/oauth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+    accessToken = await accessToken.json()
+
+    console.log(accessToken)
+
+    // res.render('./users/account')
+    res.redirect('/')
   }
 
   // /**
