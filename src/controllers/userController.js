@@ -7,7 +7,7 @@
 
 // import { User } from '../models/user.js'
 import fetch from 'node-fetch'
-import cryptoRandomString from 'crypto-random-string'
+// import cryptoRandomString from 'crypto-random-string'
 
 /**
  * Encapsulates a controller.
@@ -34,7 +34,7 @@ export class UsersController {
   async callback (req, res, next) {
     console.log('TEST CALLBACK')
     console.log(req.query.code)
-    const codeVerifier = cryptoRandomString({ length: 128 })
+    // const codeVerifier = cryptoRandomString({ length: 128 })
 
     const body = {
       client_id: process.env.APP_ID,
@@ -60,7 +60,18 @@ export class UsersController {
     console.log(accessToken)
 
     // res.render('./users/account')
-    res.redirect('/')
+    res.redirect('./account')
+  }
+
+  /**
+   * Handle the redirect.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async account (req, res, next) {
+    res.render('./users/account')
   }
 
   // /**
