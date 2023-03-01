@@ -60,18 +60,18 @@ export class UsersController {
     console.log(accessToken)
 
     // res.render('./users/account')
-    res.redirect('./account')
+    res.redirect('./profile')
   }
 
   /**
-   * Handle the redirect.
+   * Handle the redirect to profile page.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async account (req, res, next) {
-    res.render('./users/account')
+  async profile (req, res, next) {
+    res.render('./users/profile')
   }
 
   // /**
