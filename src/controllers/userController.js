@@ -114,6 +114,42 @@ export class UsersController {
     }
   }
 
+  /**
+   * Destroys the user session and logs out.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   */
+  async logout (req, res) {
+    console.log('LOGOUT ', req.session.accessToken)
+    const accessToken = req.session.accessToken?.access_token
+    console.log('LOGOUT ', accessToken)
+    try {
+      const body = {
+        client_id: process.env.APP_ID,
+        client_secret: process.env.APP_SECRET,
+        token: accessToken
+      }
+
+      const response = await fetch('https://gitlab.lnu.se/oauth/revoke', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+      console.log(response)
+
+      if (response.status === 200) {
+        req.session.destroy()
+      }
+
+      res.redirect('/')
+    } catch (error) {
+      res.redirect('/')
+    }
+  }
+
   // /**
   //  * Displays the login page.
   //  *
