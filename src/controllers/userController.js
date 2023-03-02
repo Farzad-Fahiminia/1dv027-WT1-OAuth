@@ -86,10 +86,9 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   async profile (req, res, next) {
-    console.log('REQ ', req.session.accessToken)
     const token = req.session.accessToken?.access_token
+    console.log('REQ ', req.session.accessToken)
     console.log('TOKEN ', token)
-    // console.log('ACCESS ', req.session.accessToken.access_token)
     try {
       let data = await fetch('https://gitlab.lnu.se/api/v4/user', {
         method: 'GET',
@@ -112,8 +111,6 @@ export class UsersController {
         last_activity_on: data.last_activity_on,
         email: data.email
       }
-
-      // res.render('issues/index', { viewData })
 
       res.render('./users/profile', { viewData })
     } catch (error) {
@@ -153,7 +150,7 @@ export class UsersController {
 
       const viewData = activityArray.map(activity => ({
         action_name: activity.action_name,
-        created_at: activity.created_at,
+        created_at: activity.created_at.substring(0, 19).replace('T', ' '),
         target_title: activity.target_title,
         target_type: activity.target_type
       }))
@@ -161,7 +158,6 @@ export class UsersController {
       console.log('VIEW ', viewData)
 
       res.render('./users/activities', { viewData })
-      // res.render('./users/activities')
     } catch (error) {
       next(error)
     }
@@ -174,9 +170,7 @@ export class UsersController {
    * @param {object} res - Express response object.
    */
   async logout (req, res) {
-    console.log('LOGOUT ', req.session.accessToken)
     const accessToken = req.session.accessToken?.access_token
-    console.log('LOGOUT ', accessToken)
     try {
       const body = {
         client_id: process.env.APP_ID,
