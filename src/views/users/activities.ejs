@@ -1,0 +1,41 @@
+<h1>Activities</h1>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Action Name</th>
+      <th>Created At</th>
+      <th>Target Title</th>
+      <th>Target Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (viewData?.length > 0) { %>
+      <% viewData.forEach(activity => { %>
+        <tr>
+          <td class="activity-author-table">
+            <%= activity.action_name %>
+          </td>
+          <td class="activity-description-table">
+            <%= activity.created_at %>
+          </td>
+          <td class="activity-action-table">
+            <%= activity.target_title %>
+          </td>
+          <td class="activity-action-table">
+            <%= activity.target_type %>
+          </td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+<% } else { %>
+<table class="table table-striped">
+  <tbody>
+      <tr>
+        <td class="text-center text-danger">
+          There are no activities to display
+        </td>
+      </tr>
+  </tbody>
+</table>
+<% } %>
