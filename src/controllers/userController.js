@@ -129,28 +129,29 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   async activities (req, res, next) {
-    console.log('REQ ', req.session.accessToken)
     const token = req.session.accessToken?.access_token
+
+    const eventUri = 'https://gitlab.lnu.se/api/v4/events'
+    const activityPerPage = 60
+    const pages = 2
+    const activityArray = []
+
     try {
-      let data = await fetch('https://gitlab.lnu.se/api/v4/events', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token
-        }
-      })
-      data = await data.json()
+      for (let i = 1; i <= pages; i++) {
+        const uri = `${eventUri}?per_page=${activityPerPage}&page=${i}`
 
-      // console.log('ACTIVITIES ', data)
+        let data = await fetch(`${uri}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
+          }
+        })
+        data = await data.json()
+        activityArray.push(...data)
+      }
 
-      // const viewData = {
-      //   action_name: data.action_name,
-      //   created_at: data.created_at,
-      //   target_title: data.target_title,
-      //   target_type: data.target_type
-      // }
-
-      const viewData = data.map(activity => ({
+      const viewData = activityArray.map(activity => ({
         action_name: activity.action_name,
         created_at: activity.created_at,
         target_title: activity.target_title,
