@@ -8,6 +8,8 @@
 // import { User } from '../models/user.js'
 import fetch from 'node-fetch'
 import cryptoRandomString from 'crypto-random-string'
+// import { GraphQLClient } from 'graphql-request'
+import { GraphQLClient, gql } from 'graphql-request'
 
 /**
  * Encapsulates a controller.
@@ -99,8 +101,6 @@ export class UsersController {
       })
       data = await data.json()
 
-      console.log('DATA ', data)
-
       const viewData = {
         id: data.id,
         username: data.username,
@@ -158,6 +158,74 @@ export class UsersController {
       console.log('VIEW ', viewData)
 
       res.render('./users/activities', { viewData })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * Handle the redirect to activities page.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async groupProjects (req, res, next) {
+    const token = req.session.accessToken?.access_token
+
+    try {
+      const endpoint = 'https://gitlab.lnu.se/api/graphql'
+
+      const graphQLClient = new GraphQLClient(endpoint, {
+        headers: {
+          authorization: 'Bearer ' + token
+        }
+      })
+
+      const query = gql`
+      query {
+        currentUser {
+          
+          groups(first: 3) {
+            pageInfo {
+              endCursor
+              hasNextPage
+            }
+            nodes {
+              id
+              name
+              fullPath
+              avatarUrl
+              path
+                projects(includeSubgroups: true) {
+                  nodes {
+                      id
+                      name
+                      fullPath
+                      avatarUrl
+                      path
+                      repository {tree {lastCommit {authoredDate author {name username avatarUrl}}}}
+                    projectMembers {       
+                      nodes {
+                        createdBy {
+                          name
+                          avatarUrl
+                          username
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+
+      const data = await graphQLClient.request(query)
+      console.log(JSON.stringify(data, undefined, 2))
+
+      res.render('./users/group-projects')
     } catch (error) {
       next(error)
     }

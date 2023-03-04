@@ -24,6 +24,7 @@ router.get('/login', (req, res, next) => controller.login(req, res, next))
 router.get('/callback', (req, res, next) => controller.callback(req, res, next))
 router.get('/profile', (req, res, next) => controller.profile(req, res, next))
 router.get('/activities', (req, res, next) => controller.activities(req, res, next))
+router.get('/group-projects', (req, res, next) => controller.groupProjects(req, res, next))
 router.get('/logout', (req, res, next) => controller.logout(req, res, next))
 
 // Map HTTP verbs and route paths to controller action methods.
