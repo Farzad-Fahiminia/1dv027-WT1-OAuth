@@ -186,7 +186,7 @@ export class UsersController {
       query {
         currentUser {
           
-          groups(first: 3) {
+          groups {
             pageInfo {
               endCursor
               hasNextPage

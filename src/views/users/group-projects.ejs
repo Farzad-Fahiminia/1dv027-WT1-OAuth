@@ -1,6 +1,6 @@
 <div class="wrapper">
   <h1>Group with projects</h1>
-  <% data.currentUser.groups.nodes.forEach(function(group) { %>
+  <% data.currentUser.groups.nodes.slice(0, 3).forEach(function(group) { %>
     <div class="table-wrapper">
       <table class="table table-striped">
       <% if (group.avatarUrl !== null) { %>
@@ -16,16 +16,16 @@
         </tr>
       </thead>
       <tbody>
-        <% group.projects.nodes.forEach(function(project) { %>
+        <% group.projects.nodes.slice(0, 5).forEach(function(project) { %>
             <tr>
               <td class="activity-author-table" width="60%">
                 <p><a href="https://gitlab.lnu.se/<%= project.fullPath %>"><%= project.name %></a></p>
-                <span class="grey"><%= project.fullPath %></span>
+                <span class="grey small"><%= project.fullPath %></span>
               </td>
-              <td class="activity-author-table" width="20%">
-                <p><%= project.repository.tree.lastCommit.authoredDate %></p>
+              <td class="activity-author-table" width="25%">
+                <p><%= project.repository.tree.lastCommit.authoredDate.substring(0, 19).replace('T', ' ') %></p>
               </td>
-              <td class="activity-author-table" width="20%">
+              <td class="activity-author-table" width="15%">
                 <span>
                   <% if (project.repository.tree.lastCommit.author.avatarUrl.avatarUrl !== null) { %>
                     <img src="<%= project.repository.tree.lastCommit.author.avatarUrl %>" alt="Avatar" width="25" height="25" crossorigin="true">
@@ -37,6 +37,9 @@
           <% }); %>
         </tbody>
       </table>
+      <% if (group.projects.nodes.length > 5) { %>
+        <p class="grey padding opacity">There are more projects...</p>
+      <% } %>
     </div>
   <% }); %>
 </div>

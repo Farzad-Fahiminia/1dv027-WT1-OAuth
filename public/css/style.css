@@ -67,7 +67,7 @@ button:hover, input[type=submit]:hover {
 
 .table-striped td, .table-striped th {
   border-bottom: 1px solid #ddd;
-  padding: 10px;
+  padding: 10px 2px;
 }
 
 .table-striped tr:nth-child(odd) {
@@ -75,14 +75,18 @@ button:hover, input[type=submit]:hover {
 }
 
 .table-striped tr:hover {
-  background-color: #dceae8;
+  background-color: #e4eaee;
 }
 
 .table-striped th {
-  padding: 15px;
+  padding: 15px 2px 5px 2px;
   text-align: left;
   background-color: #fff;
   color: #111;
+}
+
+table > h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
 }
 
 .wrapper {
@@ -92,18 +96,23 @@ button:hover, input[type=submit]:hover {
 
 .grey {
   color: grey;
-  font-size: 0.8rem;
   margin-top: 0;
 }
 
-table > h1, h2, h3, h4, h5, h6, p {
-  margin: 0;
+.small {
+  font-size: 0.8rem;
+}
+
+.padding {
+  padding: 10px 0;
+}
+
+.opacity {
+  opacity: 0.5;
 }
 
 /* ---------- Header ---------- */
 header {
-  /* background-color: #111; */
-  /* color: #111; */
   padding: 30px 20px;
 }
 
