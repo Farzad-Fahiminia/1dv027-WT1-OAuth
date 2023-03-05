@@ -225,7 +225,7 @@ export class UsersController {
       const data = await graphQLClient.request(query)
       console.log(JSON.stringify(data, undefined, 2))
 
-      res.render('./users/group-projects')
+      res.render('./users/group-projects', { data })
     } catch (error) {
       next(error)
     }

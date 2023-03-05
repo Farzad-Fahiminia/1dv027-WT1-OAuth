@@ -1,3 +1,42 @@
 <div class="wrapper">
-  <h1>Group Projects</h1>
+  <h1>Group with projects</h1>
+  <% data.currentUser.groups.nodes.forEach(function(group) { %>
+    <div class="table-wrapper">
+      <table class="table table-striped">
+      <% if (group.avatarUrl !== null) { %>
+        <img src="https://gitlab.lnu.se/<%= group.avatarUrl %>" alt="Avatar" width="25" height="25" crossorigin="true">
+      <% } %>
+      <h2><a href="https://gitlab.lnu.se/<%= group.fullPath %>"><%= group.name %></a></h2>
+      <span class="grey"><%= group.fullPath %></span>
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Last commit</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% group.projects.nodes.forEach(function(project) { %>
+            <tr>
+              <td class="activity-author-table" width="60%">
+                <p><a href="https://gitlab.lnu.se/<%= project.fullPath %>"><%= project.name %></a></p>
+                <span class="grey"><%= project.fullPath %></span>
+              </td>
+              <td class="activity-author-table" width="20%">
+                <p><%= project.repository.tree.lastCommit.authoredDate %></p>
+              </td>
+              <td class="activity-author-table" width="20%">
+                <span>
+                  <% if (project.repository.tree.lastCommit.author.avatarUrl.avatarUrl !== null) { %>
+                    <img src="<%= project.repository.tree.lastCommit.author.avatarUrl %>" alt="Avatar" width="25" height="25" crossorigin="true">
+                  <% } %>
+                  <%= project.repository.tree.lastCommit.author.username %>
+                </span>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% }); %>
 </div>
