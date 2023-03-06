@@ -105,22 +105,22 @@ try {
     }
   })
 
-  // // Error handler.
-  // app.use(function (err, req, res, next) {
-  //   if (!err.status) {
-  //     const cause = err
-  //     err = createError(500)
-  //     err.cause = cause
-  //   }
+  // Error handler.
+  app.use(function (err, req, res, next) {
+    if (!err.status) {
+      const cause = err
+      err = createError(500)
+      err.cause = cause
+    }
 
-  //   if (req.app.get('env') !== 'development') {
-  //     return res
-  //       .status(err.status)
-  //       .json({
-  //         status: err.status,
-  //         message: err.message
-  //       })
-  //   }
+    if (req.app.get('env') !== 'development') {
+      return res
+        .status(err.status)
+        .json({
+          status: err.status,
+          message: err.message
+        })
+    }
 
     // Development only!
     // Only providing detailed error in development.

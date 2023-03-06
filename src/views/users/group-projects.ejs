@@ -42,4 +42,7 @@
       <% } %>
     </div>
   <% }); %>
+  <% if (data.currentUser.groups.nodes.length > 3) { %>
+    <p class="grey padding opacity">There are more groups...</p>
+  <% } %>
 </div>
