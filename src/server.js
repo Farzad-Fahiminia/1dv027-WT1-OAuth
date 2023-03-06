@@ -41,6 +41,18 @@ try {
     })
   )
 
+  // app.use(
+  //   helmet.contentSecurityPolicy({
+  //     directives: {
+  //       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+  //       'script-src': ["'self'"],
+  //       'img-src': ["'self'", 'gitlab.lnu.se', 'secure.gravatar.com']
+  //     },
+  //     crossOriginEmbedderPolicy: false,
+  //     crossOriginResourcePolicy: false
+  //   })
+  // )
+
   // Set up a morgan logger using the dev format for log entries.
   app.use(logger('dev'))
 

@@ -64,18 +64,61 @@ export class UsersController {
 
     // const response = await this.fetch('https://gitlab.lnu.se/oauth/token', 'POST', body)
 
-    const accessToken = await response.json()
+    const data = await response.json()
 
-    console.log(accessToken)
+    console.log('SESSION')
+    console.log(data)
 
     if (response.status !== 200) {
       req.session.destroy()
       res.redirect('../')
     }
 
-    req.session.accessToken = accessToken
+    req.session.accessToken = data.access_token
+    req.session.refreshToken = data.refresh_token
     req.session.loggedIn = true
     res.redirect('./profile')
+  }
+
+  /**
+   * Handle the callback.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async renewAccessToken (req, res, next) {
+    try {
+      const body = {
+        client_id: process.env.APP_ID,
+        client_secret: process.env.APP_SECRET,
+        refresh_token: req.session.refreshToken,
+        redirect_uri: process.env.REDIRECT_URI,
+        grant_type: 'refresh_token'
+      }
+
+      const response = await fetch('https://gitlab.lnu.se/oauth/token?', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+
+      console.log('RENEW ', response.status)
+
+      const data = await response.json()
+
+      console.log(data)
+
+      req.session.accessToken = data.access_token
+      req.session.refreshToken = data.refresh_token
+      req.session.loggedIn = true
+
+      next()
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -86,7 +129,7 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   async profile (req, res, next) {
-    const token = req.session.accessToken?.access_token
+    const token = req.session?.accessToken
 
     try {
       let data = await fetch('https://gitlab.lnu.se/api/v4/user', {
@@ -125,7 +168,7 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   async activities (req, res, next) {
-    const token = req.session.accessToken?.access_token
+    const token = req.session?.accessToken
 
     const eventUri = 'https://gitlab.lnu.se/api/v4/events'
     const activityPerPage = 60
@@ -168,7 +211,7 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   async groupProjects (req, res, next) {
-    const token = req.session.accessToken?.access_token
+    const token = req.session?.accessToken
 
     try {
       const endpoint = 'https://gitlab.lnu.se/api/graphql'
@@ -219,7 +262,6 @@ export class UsersController {
       `
 
       const data = await graphQLClient.request(query)
-      // console.log(JSON.stringify(data, undefined, 2))
 
       res.render('./users/group-projects', { data })
     } catch (error) {
@@ -234,7 +276,7 @@ export class UsersController {
    * @param {object} res - Express response object.
    */
   async logout (req, res) {
-    const accessToken = req.session.accessToken?.access_token
+    const accessToken = req.session?.accessToken
     try {
       const body = {
         client_id: process.env.APP_ID,
@@ -249,7 +291,6 @@ export class UsersController {
         },
         body: JSON.stringify(body)
       })
-      console.log(response)
 
       if (response.status === 200) {
         req.session.destroy()

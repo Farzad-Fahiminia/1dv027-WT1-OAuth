@@ -6,8 +6,11 @@
  */
 
 import express from 'express'
+import { UsersController } from '../../../controllers/userController.js'
 
 export const router = express.Router()
+
+const usersController = new UsersController()
 
 /**
  * Resolves a UsersController object from the IoC container.
@@ -20,8 +23,13 @@ const resolveUsersController = (req) => req.app.get('container').resolve('UsersC
 // Map HTTP verbs and route paths to controller action methods.
 // router.all('*', verifyToken)
 router.get('/login', (req, res, next) => resolveUsersController(req).login(req, res, next))
+
 router.get('/callback', (req, res, next) => resolveUsersController(req).callback(req, res, next))
-router.get('/profile', (req, res, next) => resolveUsersController(req).profile(req, res, next))
-router.get('/activities', (req, res, next) => resolveUsersController(req).activities(req, res, next))
-router.get('/group-projects', (req, res, next) => resolveUsersController(req).groupProjects(req, res, next))
+
+router.get('/profile', (req, res, next) => usersController.renewAccessToken(req, res, next), (req, res, next) => resolveUsersController(req).profile(req, res, next))
+
+router.get('/activities', (req, res, next) => usersController.renewAccessToken(req, res, next), (req, res, next) => resolveUsersController(req).activities(req, res, next))
+
+router.get('/group-projects', (req, res, next) => usersController.renewAccessToken(req, res, next), (req, res, next) => resolveUsersController(req).groupProjects(req, res, next))
+
 router.get('/logout', (req, res, next) => resolveUsersController(req).logout(req, res, next))

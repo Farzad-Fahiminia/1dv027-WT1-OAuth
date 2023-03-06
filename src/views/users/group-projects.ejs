@@ -19,6 +19,9 @@
         <% group.projects.nodes.slice(0, 5).forEach(function(project) { %>
             <tr>
               <td class="activity-author-table" width="60%">
+                <% if (project.avatarUrl !== null) { %>
+                  <img src="<%= project.avatarUrl %>" alt="Avatar" width="25" height="25" crossorigin="true">
+                <% } %>
                 <p><a href="https://gitlab.lnu.se/<%= project.fullPath %>"><%= project.name %></a></p>
                 <span class="grey small"><%= project.fullPath %></span>
               </td>
