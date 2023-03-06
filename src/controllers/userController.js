@@ -5,10 +5,8 @@
  * @version 1.0.0
  */
 
-// import { User } from '../models/user.js'
 import fetch from 'node-fetch'
 import cryptoRandomString from 'crypto-random-string'
-// import { GraphQLClient } from 'graphql-request'
 import { GraphQLClient, gql } from 'graphql-request'
 
 /**
@@ -43,10 +41,6 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   async callback (req, res, next) {
-    console.log('TEST CALLBACK')
-    console.log(req.query.code)
-    console.log('REQ STATE ', req.query.state)
-
     if (req.query.state !== this.state) {
       req.session.destroy()
       res.redirect('../')
@@ -68,7 +62,11 @@ export class UsersController {
       body: JSON.stringify(body)
     })
 
+    // const response = await this.fetch('https://gitlab.lnu.se/oauth/token', 'POST', body)
+
     const accessToken = await response.json()
+
+    console.log(accessToken)
 
     if (response.status !== 200) {
       req.session.destroy()
@@ -89,8 +87,7 @@ export class UsersController {
    */
   async profile (req, res, next) {
     const token = req.session.accessToken?.access_token
-    console.log('REQ ', req.session.accessToken)
-    console.log('TOKEN ', token)
+
     try {
       let data = await fetch('https://gitlab.lnu.se/api/v4/user', {
         method: 'GET',
@@ -99,6 +96,8 @@ export class UsersController {
           Authorization: 'Bearer ' + token
         }
       })
+
+      // const response = await this.fetch('https://gitlab.lnu.se/api/v4/user', 'GET', body)
       data = await data.json()
 
       const viewData = {
@@ -155,8 +154,6 @@ export class UsersController {
         target_type: activity.target_type
       }))
 
-      console.log('VIEW ', viewData)
-
       res.render('./users/activities', { viewData })
     } catch (error) {
       next(error)
@@ -185,7 +182,6 @@ export class UsersController {
       const query = gql`
       query {
         currentUser {
-          
           groups {
             pageInfo {
               endCursor
@@ -223,7 +219,7 @@ export class UsersController {
       `
 
       const data = await graphQLClient.request(query)
-      console.log(JSON.stringify(data, undefined, 2))
+      // console.log(JSON.stringify(data, undefined, 2))
 
       res.render('./users/group-projects', { data })
     } catch (error) {
@@ -266,97 +262,23 @@ export class UsersController {
   }
 
   // /**
-  //  * Displays the login page.
+  //  * Fetch.
   //  *
-  //  * @param {object} req - Express request object.
-  //  * @param {object} res - Express response object.
-  //  * @param {Function} next - Express next middleware function.
+  //  * @param {string} uri - URI to fetch from.
+  //  * @param {string} method - GET, POST etc.
+  //  * @param {object} body - Body to send with fetch.
+  //  * @returns {object} - Returning JSON data.
+  //  * @memberof UsersController
   //  */
-  // async index (req, res, next) {
-  //   res.render('users/login')
-  // }
+  // async fetch (uri, method, body) {
+  //   const response = await fetch(uri, {
+  //     method: `${method}`,
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify(body)
+  //   })
 
-  // /**
-  //  * Displays the register page.
-  //  *
-  //  * @param {object} req - Express request object.
-  //  * @param {object} res - Express response object.
-  //  */
-  // async register (req, res) {
-  //   res.render('users/register')
-  // }
-
-  // /**
-  //  * Creates a new user.
-  //  *
-  //  * @param {object} req - Express request object.
-  //  * @param {object} res - Express response object.
-  //  */
-  // async registerUser (req, res) {
-  //   console.log(req.body)
-  //   try {
-  //     const user = new User({
-  //       username: req.body.username,
-  //       password: req.body.password
-  //     })
-
-  //     await user.save()
-
-  //     req.session.flash = { type: 'success', text: 'The user was created successfully.' }
-  //     res.redirect('./register')
-  //   } catch (error) {
-  //     req.session.flash = { type: 'danger', text: error.message }
-  //     res.redirect('./register')
-  //   }
-  // }
-
-  // /**
-  //  * Logs in the user.
-  //  *
-  //  * @param {object} req - Express request object.
-  //  * @param {object} res - Express response object.
-  //  * @param {Function} next - Express next middleware function.
-  //  */
-  // async loginUser (req, res, next) {
-  //   try {
-  //     const user = await User.authenticate(req.body.username, req.body.password)
-  //     req.session.regenerate((error) => {
-  //       if (error) {
-  //         throw new Error('Failed to re-generate session.')
-  //       }
-  //     })
-
-  //     req.session.username = user.username
-  //     // req.session.flash = { type: 'success', text: 'You are successfully logged in!' }
-  //     res.redirect('./account')
-  //   } catch (error) {
-  //     req.session.flash = { type: 'danger', text: error.message }
-  //     res.redirect('./login')
-  //   }
-  // }
-
-  // /**
-  //  * Displays the users account page.
-  //  *
-  //  * @param {object} req - Express request object.
-  //  * @param {object} res - Express response object.
-  //  */
-  // async account (req, res) {
-  //   res.render('users/account')
-  // }
-
-  // /**
-  //  * Destroys the user session and logs out.
-  //  *
-  //  * @param {object} req - Express request object.
-  //  * @param {object} res - Express response object.
-  //  */
-  // async logout (req, res) {
-  //   try {
-  //     req.session.destroy()
-  //     res.redirect('./login')
-  //   } catch (error) {
-  //     res.redirect('./login')
-  //   }
+  //   return response
   // }
 }

@@ -85,7 +85,13 @@ button:hover, input[type=submit]:hover {
   color: #111;
 }
 
-table > h1, h2, h3, h4, h5, h6, p {
+table h1,
+table h2,
+table h3,
+table h4,
+table h5,
+table h6,
+table p {
   margin: 0;
 }
 

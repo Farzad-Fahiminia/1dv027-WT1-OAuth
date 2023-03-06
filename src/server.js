@@ -15,11 +15,8 @@ import createError from 'http-errors'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { router } from './routes/router.js'
-// import { connectDB } from './config/mongoose.js'
 
 try {
-  // await connectDB(container.resolve('ConnectionString'))
-
   const app = express()
 
   app.set('container', container)
@@ -97,22 +94,33 @@ try {
   // Register routes.
   app.use('/', router)
 
-  // Error handler.
-  app.use(function (err, req, res, next) {
-    if (!err.status) {
-      const cause = err
-      err = createError(500)
-      err.cause = cause
+  // Error handler. Redirects the user to the correct error page.
+  app.use((err, req, res, next) => {
+    if (err.status === 403) {
+      res.render('errors/403')
+    } else if (err.status === 404) {
+      res.render('errors/404')
+    } else {
+      res.render('errors/500')
     }
+  })
 
-    if (req.app.get('env') !== 'development') {
-      return res
-        .status(err.status)
-        .json({
-          status: err.status,
-          message: err.message
-        })
-    }
+  // // Error handler.
+  // app.use(function (err, req, res, next) {
+  //   if (!err.status) {
+  //     const cause = err
+  //     err = createError(500)
+  //     err.cause = cause
+  //   }
+
+  //   if (req.app.get('env') !== 'development') {
+  //     return res
+  //       .status(err.status)
+  //       .json({
+  //         status: err.status,
+  //         message: err.message
+  //       })
+  //   }
 
     // Development only!
     // Only providing detailed error in development.
