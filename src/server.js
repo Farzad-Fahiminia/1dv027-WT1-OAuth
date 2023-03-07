@@ -21,12 +21,6 @@ try {
 
   app.set('container', container)
 
-  // Get the directory name of this module's path.
-  const directoryFullName = dirname(fileURLToPath(import.meta.url))
-
-  // Set the base URL to use for all relative URLs in a document.
-  const baseURL = process.env.BASE_URL || '/'
-
   // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
   app.use(helmet())
 
@@ -36,22 +30,18 @@ try {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
         'script-src': ["'self'"],
-        'img-src': ['gitlab.lnu.se', '*.gravatar.com']
-      }
+        'img-src': ["'self'", 'gitlab.lnu.se', '*.gravatar.com']
+      },
+      crossOriginEmbedderPolicy: false,
+      crossOriginResourcePolicy: false
     })
   )
 
-  // app.use(
-  //   helmet.contentSecurityPolicy({
-  //     directives: {
-  //       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-  //       'script-src': ["'self'"],
-  //       'img-src': ["'self'", 'gitlab.lnu.se', 'secure.gravatar.com']
-  //     },
-  //     crossOriginEmbedderPolicy: false,
-  //     crossOriginResourcePolicy: false
-  //   })
-  // )
+  // Get the directory name of this module's path.
+  const directoryFullName = dirname(fileURLToPath(import.meta.url))
+
+  // Set the base URL to use for all relative URLs in a document.
+  const baseURL = process.env.BASE_URL || '/'
 
   // Set up a morgan logger using the dev format for log entries.
   app.use(logger('dev'))

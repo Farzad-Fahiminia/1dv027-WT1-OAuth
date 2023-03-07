@@ -4,7 +4,7 @@
     <div class="table-wrapper">
       <table class="table table-striped">
       <% if (group.avatarUrl !== null) { %>
-        <img src="https://gitlab.lnu.se/<%= group.avatarUrl %>" alt="Avatar" width="25" height="25" crossorigin="true">
+        <img src="https://gitlab.lnu.se/<%= group.avatarUrl %>" alt="Group avatar" width="25" height="25" crossorigin="true">
       <% } %>
       <h2><a href="https://gitlab.lnu.se/<%= group.fullPath %>"><%= group.name %></a></h2>
       <span class="grey"><%= group.fullPath %></span>
@@ -20,7 +20,7 @@
             <tr>
               <td class="activity-author-table" width="60%">
                 <% if (project.avatarUrl !== null) { %>
-                  <img src="<%= project.avatarUrl %>" alt="Avatar" width="25" height="25" crossorigin="true">
+                  <img src="<%= project.avatarUrl %>" alt="Project avatar" width="25" height="25" crossorigin="true">
                 <% } %>
                 <p><a href="https://gitlab.lnu.se/<%= project.fullPath %>"><%= project.name %></a></p>
                 <span class="grey small"><%= project.fullPath %></span>
@@ -31,7 +31,7 @@
               <td class="activity-author-table" width="15%">
                 <span>
                   <% if (project.repository.tree.lastCommit.author.avatarUrl.avatarUrl !== null) { %>
-                    <img src="<%= project.repository.tree.lastCommit.author.avatarUrl %>" alt="Avatar" width="25" height="25" crossorigin="true">
+                    <img src="<%= project.repository.tree.lastCommit.author.avatarUrl %>" alt="Author avatar" width="25" height="25" crossorigin="true">
                   <% } %>
                   <%= project.repository.tree.lastCommit.author.username %>
                 </span>
@@ -41,11 +41,11 @@
         </tbody>
       </table>
       <% if (group.projects.nodes.length > 5) { %>
-        <p class="grey padding opacity">There are more projects...</p>
+        <p class="grey padding inactive_link">Load more projects...</p>
       <% } %>
     </div>
   <% }); %>
   <% if (data.currentUser.groups.nodes.length > 3) { %>
-    <p class="grey padding opacity">There are more groups...</p>
+    <p class="grey padding inactive_link">Load more groups...</p>
   <% } %>
 </div>

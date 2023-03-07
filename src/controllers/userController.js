@@ -30,11 +30,15 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   login (req, res, next) {
-    res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.APP_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&scope=${process.env.REQUESTED_SCOPE}&state=${this.state}`)
+    try {
+      res.redirect(`https://gitlab.lnu.se/oauth/authorize?client_id=${process.env.APP_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&scope=${process.env.REQUESTED_SCOPE}&state=${this.state}`)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
-   * Handle the callback.
+   * Handles the callback.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -66,7 +70,6 @@ export class UsersController {
 
     const data = await response.json()
 
-    console.log('SESSION')
     console.log(data)
 
     if (response.status !== 200) {
@@ -81,7 +84,7 @@ export class UsersController {
   }
 
   /**
-   * Handle the callback.
+   * Handles the renewing of the access token.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -105,11 +108,7 @@ export class UsersController {
         body: JSON.stringify(body)
       })
 
-      console.log('RENEW ', response.status)
-
       const data = await response.json()
-
-      console.log(data)
 
       req.session.accessToken = data.access_token
       req.session.refreshToken = data.refresh_token
@@ -225,7 +224,7 @@ export class UsersController {
       const query = gql`
       query {
         currentUser {
-          groups {
+          groups(first: 6) {
             pageInfo {
               endCursor
               hasNextPage
@@ -236,7 +235,7 @@ export class UsersController {
               fullPath
               avatarUrl
               path
-                projects(includeSubgroups: true) {
+                projects(first: 10, includeSubgroups: true) {
                   nodes {
                       id
                       name
