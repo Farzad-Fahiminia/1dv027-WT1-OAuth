@@ -45,42 +45,44 @@ export class UsersController {
    * @param {Function} next - Express next middleware function.
    */
   async callback (req, res, next) {
-    if (req.query.state !== this.state) {
-      req.session.destroy()
-      res.redirect('../')
+    try {
+      if (req.query.state !== this.state) {
+        req.session.destroy()
+        res.redirect('../')
+      }
+
+      const body = {
+        client_id: process.env.APP_ID,
+        client_secret: process.env.APP_SECRET,
+        code: req.query.code,
+        redirect_uri: process.env.REDIRECT_URI,
+        grant_type: 'authorization_code'
+      }
+
+      const response = await fetch('https://gitlab.lnu.se/oauth/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      })
+
+      // const response = await this.fetch('https://gitlab.lnu.se/oauth/token', 'POST', body)
+
+      const data = await response.json()
+
+      if (response.status !== 200) {
+        req.session.destroy()
+        res.redirect('../')
+      }
+
+      req.session.accessToken = data.access_token
+      req.session.refreshToken = data.refresh_token
+      req.session.loggedIn = true
+      res.redirect('./profile')
+    } catch (error) {
+      next(error)
     }
-
-    const body = {
-      client_id: process.env.APP_ID,
-      client_secret: process.env.APP_SECRET,
-      code: req.query.code,
-      redirect_uri: process.env.REDIRECT_URI,
-      grant_type: 'authorization_code'
-    }
-
-    const response = await fetch('https://gitlab.lnu.se/oauth/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    })
-
-    // const response = await this.fetch('https://gitlab.lnu.se/oauth/token', 'POST', body)
-
-    const data = await response.json()
-
-    console.log(data)
-
-    if (response.status !== 200) {
-      req.session.destroy()
-      res.redirect('../')
-    }
-
-    req.session.accessToken = data.access_token
-    req.session.refreshToken = data.refresh_token
-    req.session.loggedIn = true
-    res.redirect('./profile')
   }
 
   /**
@@ -92,6 +94,13 @@ export class UsersController {
    */
   async renewAccessToken (req, res, next) {
     try {
+      if (!req.session.loggedIn) {
+        req.session.destroy()
+        const err = new Error('Forbidden')
+        err.status = 403
+        next(err)
+      }
+
       const body = {
         client_id: process.env.APP_ID,
         client_secret: process.env.APP_SECRET,
