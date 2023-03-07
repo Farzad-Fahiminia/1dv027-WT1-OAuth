@@ -7,7 +7,7 @@
 
 import { IoCContainer } from '../util/IoCContainer.js'
 import { HomeController } from '../controllers/homeController.js'
-import { UsersController } from '../controllers/userController.js'
+import { UsersController } from '../controllers/UsersController.js'
 
 const iocContainer = new IoCContainer()
 
